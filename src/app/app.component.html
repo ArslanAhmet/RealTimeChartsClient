@@ -1,3 +1,10 @@
+<ul>
+  <li *ngFor='let data of signalRService.bradcastedData'>
+    <strong>Label bu: </strong> {{data.label}} - <strong>Value bu: </strong> {{data.data[0]}}
+  </li>
+</ul>
+
+
 <div style="display: block" *ngIf='signalRService.data'>
   <canvas baseChart
           [datasets]='signalRService.data'
@@ -9,8 +16,12 @@
           (chartClick)="chartClicked($event)"></canvas>
 </div>
 <br><br>
-<ul>
-  <li *ngFor='let data of signalRService.bradcastedData'>
-    <strong>Label: </strong> {{data.label}} - <strong>Value: </strong> {{data.data[0]}}
-  </li>
-</ul>
+
+<google-chart *ngIf="chart.data"
+    [title]="chart.title"
+    [type]="chart.type"
+    [data]="chart.data"
+    [options]="chart.options">
+</google-chart>
+
+

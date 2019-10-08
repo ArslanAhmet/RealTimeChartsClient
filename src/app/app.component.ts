@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SignalRService } from './services/signal-r.service';
+import { GoogleChartComponent } from 'angular-google-charts';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+  export class AppComponent implements OnInit {
   public chartOptions: any = {
     scaleShowVerticalLines: true,
     responsive: true,
@@ -26,6 +27,29 @@ export class AppComponent implements OnInit {
 
   constructor(public signalRService: SignalRService, private http: HttpClient) { }
 
+  @ViewChild('googlechart')
+  googlechart: GoogleChartComponent;
+  chart = {
+    title: 'Sicaklık',
+    type: 'Gauge',
+    // data: [
+    //   ['Memory', 50],
+    //   ['CPU', 99]
+    // ],
+     data: this.signalRService.temperatureData  ,
+    options: {
+      width: 400,
+      height: 120,
+      greenFrom: 0,
+      greenTo: 75,
+      redFrom: 90,
+      redTo: 100,
+      yellowFrom: 75,
+      yellowTo: 90,
+      minorTicks: 5
+    }
+  };
+
   ngOnInit() {
     this.signalRService.startConnection();
     this.signalRService.addTransferChartDataListener();
@@ -34,13 +58,15 @@ export class AppComponent implements OnInit {
   }
 
   private startHttpRequest = () => {
-    this.http.get('https://localhost:44333/api/chart')
+    this.http.get('https://localhost:44311/api/Kardemir')
       .subscribe(res => {
         console.log(res);
       })
   }
 
   public chartClicked = (event) => {
+    console.log('this.chart.data:');
+    console.log(this.chart.data);
     console.log(event);
     this.signalRService.broadcastChartData();
   }
